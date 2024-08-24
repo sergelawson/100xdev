@@ -55,6 +55,12 @@ function BinToBytes(bin: string): Uint8Array {
   return uInt8Array;
 }
 
+function stringToBytes(str: string) {
+  return new TextEncoder().encode(str);
+}
+
 console.log(UintToBin(255));
 
 console.log(BinToBytes("1111111111111111000000010111"));
+
+console.log(stringToBytes("hello"));
