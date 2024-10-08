@@ -7,17 +7,39 @@ import {
   Textarea,
   Button,
   SimpleGrid,
-  Image,
+  AvatarGroup,
+  Avatar,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import ParticlesComponent from "../../components/Particles";
 import btc from "../../assets/btc.svg";
 import eth from "../../assets/eth.svg";
 import sol from "../../assets/sol.svg";
+import useWallet from "../../hooks/useWallet";
+import { useState } from "react";
 
-export default function JoinOurTeam() {
+const Wallet = () => {
+  const { generateMnemonicPhrase, getMemonicSeed, getSolanaAdress } =
+    useWallet();
+
+  const [mnemonic, setMnemomic] = useState<string>();
+
+  const handleGenerateMnemonic = async () => {
+    // const phrase = await generateMnemonicPhrase();
+
+    const seed = await getMemonicSeed(
+      "penalty fade grow rapid extend liar fix invest clog torch worry slow"
+    );
+
+    const address = getSolanaAdress(1, seed);
+
+    // setMnemomic(phrase);
+
+    console.log(address);
+  };
   return (
     <>
-      <Box position={"relative"} bgGradient={"linear(to-bl, #1d3557,#001b2e)"}>
+      <Box position={"relative"} bgGradient={"linear(to-l, #005C97,#05143F)"}>
         <Box>
           <ParticlesComponent />
         </Box>
@@ -32,33 +54,75 @@ export default function JoinOurTeam() {
           <Stack spacing={{ base: 10, md: 20 }}>
             <Heading
               lineHeight={1.1}
-              fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+              fontSize={{ base: "4xl", sm: "5xl", md: "6xl", lg: "7xl" }}
               color={"#f1faee"}
             >
-              100x Dev <p>Crypto Wallet</p>
+              100x Dev
+              <Text
+                as={"p"}
+                bgGradient="linear(to-r, #DD5E89,#F7BB97)"
+                bgClip="text"
+              >
+                Crypto Wallet
+              </Text>
             </Heading>
             <Stack direction={"row"} spacing={4} align={"center"}>
-              <Image
-                borderRadius="full"
-                boxSize="100px"
-                src={btc}
-                alt="Bitcoin"
-                zIndex={10}
-              />
-              <Image
-                borderRadius="full"
-                boxSize="100px"
-                src={eth}
-                alt="Etherium"
-                zIndex={10}
-              />
-              <Image
-                borderRadius="full"
-                boxSize="100px"
-                src={sol}
-                alt="Solana"
-                zIndex={10}
-              />
+              <AvatarGroup>
+                <Avatar
+                  src={btc}
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  size={useBreakpointValue({ base: "lg", md: "xl" })}
+                  position={"relative"}
+                  zIndex={2}
+                  _before={{
+                    content: '""',
+                    width: "full",
+                    height: "full",
+                    rounded: "full",
+                    bgColor: "#FFFFFF",
+                    position: "absolute",
+                    zIndex: -1,
+                    top: 0,
+                    left: 0,
+                  }}
+                />
+                <Avatar
+                  src={eth}
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  size={useBreakpointValue({ base: "lg", md: "xl" })}
+                  position={"relative"}
+                  zIndex={2}
+                  _before={{
+                    content: '""',
+                    width: "full",
+                    height: "full",
+                    rounded: "full",
+                    bgColor: "#627EEA",
+                    position: "absolute",
+                    zIndex: -1,
+                    top: 0,
+                    left: 0,
+                  }}
+                />
+                <Avatar
+                  src={sol}
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  size={useBreakpointValue({ base: "lg", md: "xl" })}
+                  position={"relative"}
+                  zIndex={2}
+                  _before={{
+                    content: '""',
+                    width: "full",
+                    height: "full",
+                    rounded: "full",
+                    bgColor: "#000000",
+                    position: "absolute",
+                    zIndex: -1,
+                    top: 0,
+                    left: 0,
+                  }}
+                />
+              </AvatarGroup>
             </Stack>
           </Stack>
           <Stack
@@ -68,6 +132,7 @@ export default function JoinOurTeam() {
             spacing={{ base: 8 }}
             maxW={{ lg: "lg" }}
             mb={4}
+            zIndex={10}
           >
             <Stack spacing={4}>
               <Heading
@@ -76,13 +141,6 @@ export default function JoinOurTeam() {
                 fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
               >
                 Create Your Wallet
-                <Text
-                  as={"span"}
-                  bgGradient="linear(to-r, red.400,pink.400)"
-                  bgClip="text"
-                >
-                  !
-                </Text>
               </Heading>
               <Text color={"dark.500"} fontSize={{ base: "sm", sm: "md" }}>
                 Set up your secure crypto wallet in minutes and take control of
@@ -92,12 +150,13 @@ export default function JoinOurTeam() {
             <Box as={"form"} mt={2}>
               <Stack spacing={4}>
                 <Button
+                  onClick={handleGenerateMnemonic}
                   fontFamily={"heading"}
                   w={"full"}
-                  bgGradient="linear(to-r, #8b2fc9,pink.400)"
+                  bgGradient="linear(to-r, #000428,#004e92)"
                   color={"white"}
                   _hover={{
-                    bgGradient: "linear(to-r, red.400,pink.400)",
+                    bgGradient: "linear(to-r, #43cea2,#185a9d)",
                     boxShadow: "xl",
                   }}
                 >
@@ -118,20 +177,21 @@ export default function JoinOurTeam() {
                 fontFamily={"heading"}
                 mt={2}
                 w={"full"}
-                bgGradient="linear(to-r, red.400,pink.400)"
+                bgGradient="linear(to-r, #000428,#004e92)"
                 color={"white"}
                 _hover={{
-                  bgGradient: "linear(to-r, red.400,pink.400)",
+                  bgGradient: "linear(to-r, #43cea2,#185a9d)",
                   boxShadow: "xl",
                 }}
               >
                 Add a wallet
               </Button>
             </Box>
-            form
           </Stack>
         </Container>
       </Box>
     </>
   );
-}
+};
+
+export default Wallet;
