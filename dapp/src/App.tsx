@@ -3,27 +3,21 @@ import {
   WalletDisconnectButton,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
+import { Input } from "@nextui-org/input";
 import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
   Modal,
-  ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
-  ModalOverlay,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+  ModalBody,
+  ModalFooter,
+} from "@nextui-org/modal";
+import { Button } from "@nextui-org/button";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
+import { FiNavigation } from "react-icons/fi";
+import { FiArrowDown } from "react-icons/fi";
 
 function App() {
   const { connection } = useConnection();
@@ -103,35 +97,35 @@ function App() {
 
   return (
     <>
-      <Box display={"flex"} justifyContent={"center"} p={"5"}>
-        <Stack>
-          <HStack>
+      <div className="flex justify-center p-6">
+        <div className="flex flex-col gap-y-5">
+          <div className="flex gap-x-2">
             <WalletMultiButton />
             <WalletDisconnectButton />
-          </HStack>
+          </div>
           {publicKey ? (
-            <Text fontSize="2xl" fontWeight={"bold"} color="#444444">
-              {(balance || 0) / 1e9} SOL
-            </Text>
+            <p className="text-2xl font-bold">{(balance || 0) / 1e9} SOL</p>
           ) : null}
           {publicKey ? (
-            <>
+            <div className="flex flex-col gap-y-2">
               <Button
                 onClick={() => setShowTransModal(true)}
-                colorScheme="orange"
+                color="warning"
+                startContent={<FiNavigation />}
               >
                 Send Transaction
               </Button>
               <Button
                 onClick={() => setShowAirdropModal(true)}
-                colorScheme="blue"
+                color="primary"
+                startContent={<FiArrowDown />}
               >
                 Request Air Drop
               </Button>
-            </>
+            </div>
           ) : null}
-        </Stack>
-      </Box>
+        </div>
+      </div>
       <FormModal
         isOpen={showTransModal}
         onClose={() => setShowTransModal(false)}
@@ -178,42 +172,47 @@ const FormModal: React.FC<FormModalProps> = ({
     onClose();
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={onClose}
+      placement="top-center"
+      isDismissable={false}
+      //  backdrop="opaque"
+    >
       <ModalContent>
-        <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
-          <FormControl>
-            <FormLabel>Address</FormLabel>
-            <Input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Receiver SOL Address"
-            />
-          </FormControl>
-
-          <FormControl mt={4}>
-            <FormLabel>Amount</FormLabel>
-            <Input
-              value={amount || ""}
-              onChange={(e) => setAmount(sanitizeDecimalInput(e.target.value))}
-              placeholder="Amount in SOL"
-            />
-          </FormControl>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            onClick={handleSend}
-            colorScheme="blue"
-            mr={3}
-            isLoading={isLoading}
-          >
-            Send
-          </Button>
-          <Button onClick={onClose}>Cancel</Button>
-        </ModalFooter>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
+            <ModalBody>
+              <Input
+                //variant="bordered"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                label="Receiver SOL Address"
+              />
+              <Input
+                label="Amount in SOL"
+                //variant="bordered"
+                value={amount?.toString() || ""}
+                onChange={(e) =>
+                  setAmount(sanitizeDecimalInput(e.target.value))
+                }
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                onClick={handleSend}
+                color="primary"
+                isLoading={isLoading}
+              >
+                Send
+              </Button>
+              <Button color="danger" variant="flat" onClick={onClose}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </>
+        )}
       </ModalContent>
     </Modal>
   );
